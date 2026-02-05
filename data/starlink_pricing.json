@@ -1,0 +1,21 @@
+{
+  "fetched_at": "2026-02-05",
+  "source_note": "Starter offline dataset. Refresh with live country-by-country Starlink checkout/pricing exports.",
+  "rows": [
+    {"country":"United States","currency":"USD","usd_rate":1,"plan":"Residential","monthly_local":120,"hardware_local":349,"notes":"Sample only"},
+    {"country":"Canada","currency":"CAD","usd_rate":0.74,"plan":"Residential","monthly_local":140,"hardware_local":499,"notes":"Sample only"},
+    {"country":"United Kingdom","currency":"GBP","usd_rate":1.28,"plan":"Residential","monthly_local":75,"hardware_local":299,"notes":"Sample only"},
+    {"country":"Germany","currency":"EUR","usd_rate":1.08,"plan":"Residential","monthly_local":65,"hardware_local":299,"notes":"Sample only"},
+    {"country":"France","currency":"EUR","usd_rate":1.08,"plan":"Residential","monthly_local":50,"hardware_local":349,"notes":"Sample only"},
+    {"country":"Australia","currency":"AUD","usd_rate":0.66,"plan":"Residential","monthly_local":139,"hardware_local":599,"notes":"Sample only"},
+    {"country":"New Zealand","currency":"NZD","usd_rate":0.61,"plan":"Residential","monthly_local":159,"hardware_local":699,"notes":"Sample only"},
+    {"country":"Japan","currency":"JPY","usd_rate":0.0067,"plan":"Residential","monthly_local":6600,"hardware_local":73000,"notes":"Sample only"},
+    {"country":"Brazil","currency":"BRL","usd_rate":0.20,"plan":"Residential","monthly_local":236,"hardware_local":2000,"notes":"Sample only"},
+    {"country":"Mexico","currency":"MXN","usd_rate":0.058,"plan":"Residential","monthly_local":1100,"hardware_local":8300,"notes":"Sample only"},
+    {"country":"Chile","currency":"CLP","usd_rate":0.0011,"plan":"Residential","monthly_local":47000,"hardware_local":355000,"notes":"Sample only"},
+    {"country":"Nigeria","currency":"NGN","usd_rate":0.00063,"plan":"Residential","monthly_local":38000,"hardware_local":590000,"notes":"Sample only"},
+    {"country":"Kenya","currency":"KES","usd_rate":0.0078,"plan":"Residential","monthly_local":6500,"hardware_local":45000,"notes":"Sample only"},
+    {"country":"Philippines","currency":"PHP","usd_rate":0.018,"plan":"Residential","monthly_local":2700,"hardware_local":29000,"notes":"Sample only"},
+    {"country":"Malaysia","currency":"MYR","usd_rate":0.21,"plan":"Residential","monthly_local":220,"hardware_local":2300,"notes":"Sample only"}
+  ]
+}
