@@ -5,6 +5,7 @@ const highestMonthlyEl = document.getElementById('highestMonthly');
 const avgHardwareEl = document.getElementById('avgHardware');
 const countryFilterEl = document.getElementById('countryFilter');
 const planFilterEl = document.getElementById('planFilter');
+const embeddedDataEl = document.getElementById('embeddedPricingData');
 
 const FALLBACK_ROWS = [
   { country: 'United States', currency: 'USD', usd_rate: 1, plan: 'Residential', monthly_local: 120, hardware_local: 349, notes: 'Fallback sample data' },
@@ -105,29 +106,58 @@ function applyFilters() {
   renderRows(filtered);
 }
 
-async function loadData() {
-  const response = await fetch('data/starlink_pricing.json');
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`.trim());
-  }
-  const payload = await response.json();
+function parseRows(payload) {
   if (!payload.rows || !Array.isArray(payload.rows)) {
-    throw new Error('Invalid data format in data/starlink_pricing.json');
+    throw new Error('Invalid data format: expected { rows: [] }');
   }
   return payload.rows;
 }
 
-async function init() {
-  let warning = '';
+function tryEmbeddedRows() {
+  if (!embeddedDataEl) {
+    throw new Error('No embedded data available');
+  }
+  const payload = JSON.parse(embeddedDataEl.textContent);
+  return parseRows(payload);
+}
+
+async function tryFetchRows(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`.trim());
+  }
+  const payload = await response.json();
+  return parseRows(payload);
+}
+
+async function loadData() {
   try {
-    allRows = await loadData();
-  } catch (error) {
-    allRows = FALLBACK_ROWS;
-    warning = `Could not load data/starlink_pricing.json (${error.message}). Showing built-in sample dataset instead.`;
+    return { rows: tryEmbeddedRows(), warning: location.protocol === 'file:' ? 'Loaded embedded pricing data because this page is opened directly from disk (file://).' : '' };
+  } catch {
+    // Continue to fetch attempt below.
   }
 
+  const fetchPaths = ['data/starlink_pricing.json', './data/starlink_pricing.json'];
+  for (const path of fetchPaths) {
+    try {
+      return { rows: await tryFetchRows(path), warning: '' };
+    } catch {
+      // try next path
+    }
+  }
+
+  return {
+    rows: FALLBACK_ROWS,
+    warning: 'Could not load pricing JSON. Showing built-in sample dataset instead.',
+  };
+}
+
+async function init() {
+  const loaded = await loadData();
+  allRows = loaded.rows;
+
   buildPlanFilter(allRows);
-  renderRows(allRows, warning);
+  renderRows(allRows, loaded.warning);
 
   countryFilterEl.addEventListener('input', applyFilters);
   planFilterEl.addEventListener('change', applyFilters);
