@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starlink Global Pricing Explorer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Starlink Global Pricing Explorer</h1>
+      <p>
+        Compare monthly plans, hardware/setup costs, and currency-converted USD pricing by market.
+      </p>
+      <p class="notice">
+        This environment has no outbound web access, so the bundled dataset is a starter snapshot template.
+        Replace <code>data/starlink_pricing.json</code> with a fresh crawl/export to cover every currently available market.
+      </p>
+    </header>
+
+    <main>
+      <section class="controls">
+        <label>
+          Country
+          <input id="countryFilter" type="text" placeholder="Search country…" />
+        </label>
+        <label>
+          Plan Type
+          <select id="planFilter">
+            <option value="">All plans</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="summary-grid">
+        <article>
+          <h2>Markets</h2>
+          <p id="totalMarkets">0</p>
+        </article>
+        <article>
+          <h2>Lowest Monthly (USD)</h2>
+          <p id="lowestMonthly">—</p>
+        </article>
+        <article>
+          <h2>Highest Monthly (USD)</h2>
+          <p id="highestMonthly">—</p>
+        </article>
+        <article>
+          <h2>Average Hardware (USD)</h2>
+          <p id="avgHardware">—</p>
+        </article>
+      </section>
+
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Currency</th>
+              <th>Plan</th>
+              <th>Monthly (Local)</th>
+              <th>Monthly (USD)</th>
+              <th>Hardware/Setup (Local)</th>
+              <th>Hardware/Setup (USD)</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="pricingBody"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <small>
+        Built for fast comparison. Update <code>fetched_at</code> and rows in
+        <code>data/starlink_pricing.json</code> when refreshing prices.
+      </small>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
