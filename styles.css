@@ -61,3 +61,5 @@ th, td {
   text-align: left;
 }
 th { background: #1e293b; }
+
+.warning-row td { background: #7c2d12; color: #ffedd5; font-weight: 600; }

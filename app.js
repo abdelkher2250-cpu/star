@@ -6,6 +6,14 @@ const avgHardwareEl = document.getElementById('avgHardware');
 const countryFilterEl = document.getElementById('countryFilter');
 const planFilterEl = document.getElementById('planFilter');
 
+const FALLBACK_ROWS = [
+  { country: 'United States', currency: 'USD', usd_rate: 1, plan: 'Residential', monthly_local: 120, hardware_local: 349, notes: 'Fallback sample data' },
+  { country: 'Canada', currency: 'CAD', usd_rate: 0.74, plan: 'Residential', monthly_local: 140, hardware_local: 499, notes: 'Fallback sample data' },
+  { country: 'United Kingdom', currency: 'GBP', usd_rate: 1.28, plan: 'Residential', monthly_local: 75, hardware_local: 299, notes: 'Fallback sample data' },
+  { country: 'Germany', currency: 'EUR', usd_rate: 1.08, plan: 'Residential', monthly_local: 65, hardware_local: 299, notes: 'Fallback sample data' },
+  { country: 'France', currency: 'EUR', usd_rate: 1.08, plan: 'Residential', monthly_local: 50, hardware_local: 349, notes: 'Fallback sample data' },
+];
+
 const fmtMoney = (value, currency) =>
   new Intl.NumberFormat(undefined, {
     style: 'currency',
@@ -17,7 +25,15 @@ const toUsd = (value, rate) => value * rate;
 
 let allRows = [];
 
+function showWarning(message) {
+  const tr = document.createElement('tr');
+  tr.className = 'warning-row';
+  tr.innerHTML = `<td colspan="8">⚠️ ${message}</td>`;
+  pricingBody.appendChild(tr);
+}
+
 function buildPlanFilter(rows) {
+  planFilterEl.innerHTML = '<option value="">All plans</option>';
   const plans = [...new Set(rows.map((row) => row.plan))].sort();
   for (const plan of plans) {
     const option = document.createElement('option');
@@ -51,8 +67,12 @@ function computeSummary(rows) {
   avgHardwareEl.textContent = fmtMoney(avgHardware, 'USD');
 }
 
-function renderRows(rows) {
+function renderRows(rows, warningMessage = '') {
   pricingBody.innerHTML = '';
+  if (warningMessage) {
+    showWarning(warningMessage);
+  }
+
   const sorted = [...rows].sort((a, b) => a.country.localeCompare(b.country));
 
   for (const row of sorted) {
@@ -85,17 +105,32 @@ function applyFilters() {
   renderRows(filtered);
 }
 
-async function init() {
+async function loadData() {
   const response = await fetch('data/starlink_pricing.json');
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`.trim());
+  }
   const payload = await response.json();
-  allRows = payload.rows;
+  if (!payload.rows || !Array.isArray(payload.rows)) {
+    throw new Error('Invalid data format in data/starlink_pricing.json');
+  }
+  return payload.rows;
+}
+
+async function init() {
+  let warning = '';
+  try {
+    allRows = await loadData();
+  } catch (error) {
+    allRows = FALLBACK_ROWS;
+    warning = `Could not load data/starlink_pricing.json (${error.message}). Showing built-in sample dataset instead.`;
+  }
+
   buildPlanFilter(allRows);
-  renderRows(allRows);
+  renderRows(allRows, warning);
 
   countryFilterEl.addEventListener('input', applyFilters);
   planFilterEl.addEventListener('change', applyFilters);
 }
 
-init().catch((error) => {
-  pricingBody.innerHTML = `<tr><td colspan="8">Failed to load data: ${error.message}</td></tr>`;
-});
+init();
